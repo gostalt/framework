@@ -12,6 +12,8 @@ import (
 func AddURIParametersToRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
+			r.ParseForm()
+
 			// Load the parameters from the request. If there
 			// are no URI params, we can return early here.
 			params := mux.Vars(r)
@@ -20,11 +22,10 @@ func AddURIParametersToRequest(next http.Handler) http.Handler {
 				return
 			}
 
-			// If params do exist on the request, then parse the
-			// request's Form field and add each URI's param to
-			// it. To prevent collisions with existing r.Form
-			// values, URI params are prepended with `:`.
-			r.ParseForm()
+			// If params do exist on the request, then add each
+			// URI's param to the request form. To prevent any
+			// collisions with existing r.Form values, URI
+			// params are prepended with `:`.
 			for param, value := range params {
 				param = ":" + param
 				r.Form.Add(param, value)

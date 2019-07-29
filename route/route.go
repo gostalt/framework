@@ -1,6 +1,8 @@
 package route
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // Definition defines a new route for the application.
 type Definition struct {
