@@ -23,6 +23,10 @@ func TransformGorilla(r *mux.Router, group *Group) *mux.Router {
 		s = r.NewRoute().Subrouter()
 	}
 
+	for _, mw := range group.middleware {
+		s.Use(mux.MiddlewareFunc(mw))
+	}
+
 	for _, route := range group.routes {
 		path := tidyPath(route.URI)
 		s.Methods(route.Methods...).Path(path).Handler(route.Handler)
