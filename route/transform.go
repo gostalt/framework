@@ -14,9 +14,19 @@ func tidyPath(path string) string {
 // Gorilla mux router. This enables an independent interface of
 // route registration and allows the implementation to be swapped
 // out later without affecting registered routes.
-func TransformGorilla(r *mux.Router, routes Collection) {
-	for _, route := range routes {
-		path := tidyPath(route.URI)
-		r.Methods(route.Methods...).Path(path).Handler(route.Handler)
+func TransformGorilla(r *mux.Router, group *Group) *mux.Router {
+	var s *mux.Router
+
+	if group.prefix != "" {
+		s = r.PathPrefix(group.prefix).Subrouter()
+	} else {
+		s = r.NewRoute().Subrouter()
 	}
+
+	for _, route := range group.routes {
+		path := tidyPath(route.URI)
+		s.Methods(route.Methods...).Path(path).Handler(route.Handler)
+	}
+
+	return s
 }

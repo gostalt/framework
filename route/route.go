@@ -2,12 +2,6 @@ package route
 
 import "net/http"
 
-// Collection is a slice of Definitions.
-// TODO: Will probably add methods to the Collection type, such
-// as prefixes and middleware, and use this instead of Gorilla's
-// subrouter calls.
-type Collection []Definition
-
 // Definition defines a new route for the application.
 type Definition struct {
 	Methods []string
