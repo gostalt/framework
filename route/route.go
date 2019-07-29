@@ -2,6 +2,10 @@ package route
 
 import "net/http"
 
+// Collection is a slice of Definitions.
+// TODO: Will probably add methods to the Collection type, such
+// as prefixes and middleware, and use this instead of Gorilla's
+// subrouter calls.
 type Collection []Definition
 
 // Definition defines a new route for the application.
@@ -11,6 +15,8 @@ type Definition struct {
 	URI     string
 }
 
+// Redirect takes a `from` URI and a `to` URI and creates a new
+// http.Handler to permanently redirect users to the new URI.
 func Redirect(from string, to string) Definition {
 	return createDefinitionFromFunc(
 		from,
@@ -21,10 +27,12 @@ func Redirect(from string, to string) Definition {
 	)
 }
 
+// Get creates a GET route using the given URI and http.Handler.
 func Get(uri string, handler http.Handler) Definition {
 	return createDefinition(uri, handler, http.MethodGet)
 }
 
+// Post creates a POST route using the given URI and http.Handler.
 func Post(uri string, handler http.Handler) Definition {
 	return createDefinition(uri, handler, http.MethodPost)
 }
