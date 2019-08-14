@@ -1,7 +1,8 @@
 package service
 
 import (
-	"github.com/gostalt/framework/service/maker"
+	"github.com/gostalt/framework/maker"
+
 	"github.com/sarulabs/di"
 )
 
@@ -29,6 +30,12 @@ func (p FileGeneratorServiceProvider) Register(b *di.Builder) {
 			Name: "RepositoryMaker",
 			Build: func(c di.Container) (interface{}, error) {
 				return maker.RepositoryMaker{Path: "app/repository/"}, nil
+			},
+		},
+		di.Def{
+			Name: "HandlerMaker",
+			Build: func(c di.Container) (interface{}, error) {
+				return maker.HandlerMaker{Path: "app/http/handler/"}, nil
 			},
 		},
 	)
