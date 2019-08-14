@@ -16,7 +16,7 @@ type BaseProvider struct{}
 
 // Register is called on all Providers in sequence when the app
 // is first loaded.
-func (p BaseProvider) Register(c di.Container) {}
+func (p BaseProvider) Register(b *di.Builder) {}
 
 // Boot is called when all the Providers have been Registered.
 func (p BaseProvider) Boot(c di.Container) {}
