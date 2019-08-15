@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMakePath(t *testing.T) {
+func TestMakeDirPath(t *testing.T) {
 	m := HandlerMaker{Path: "a/long/path/"}
 
 	path := m.makeDirPath("nested.to.handler")
