@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -23,40 +24,53 @@ func Redirect(from string, to string) Definition {
 	)
 }
 
-// Get creates a GET route using the given URI and http.Handler.
-func Get(uri string, handler http.Handler) Definition {
+// Get creates a GET route using the given URI.
+func Get(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodGet)
 }
 
-// Post creates a POST route using the given URI and http.Handler.
-func Post(uri string, handler http.Handler) Definition {
+// Post creates a POST route using the given URI.
+func Post(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodPost)
 }
 
-// Put creates a PUT route using the given URI and http.Handler.
-func Put(uri string, handler http.Handler) Definition {
+// Put creates a PUT route using the given URI.
+func Put(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodPut)
 }
 
-// Patch creates a PATCH route using the given URI and http.Handler.
-func Patch(uri string, handler http.Handler) Definition {
+// Patch creates a PATCH route using the given URI.
+func Patch(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodPatch)
 }
 
-// Delete creates a DELETE route using the given URI and http.Handler.
-func Delete(uri string, handler http.Handler) Definition {
+// Delete creates a DELETE route using the given URI.
+func Delete(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodDelete)
 }
 
-// Options creates a OPTIONS route using the given URI and http.Handler.
-func Options(uri string, handler http.Handler) Definition {
+// Options creates a OPTIONS route using the given URI.
+func Options(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodOptions)
 }
 
-func createDefinition(uri string, handler http.Handler, methods ...string) Definition {
+func createDefinition(uri string, handler interface{}, methods ...string) Definition {
+	var h http.Handler
+
+	switch handler.(type) {
+	case http.Handler:
+		h = handler.(http.Handler)
+	case fmt.Stringer:
+		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(handler.(fmt.Stringer).String()))
+		})
+	default:
+		panic("cannot create definition")
+	}
+
 	return Definition{
 		Methods: methods,
-		Handler: handler,
+		Handler: h,
 		URI:     uri,
 	}
 }
