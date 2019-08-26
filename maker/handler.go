@@ -1,6 +1,7 @@
 package maker
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,7 +32,6 @@ func (m HandlerMaker) makeDirPath(handler string) string {
 
 // Make creates a new file with the contents of the stub.
 func (m HandlerMaker) Make(name string) error {
-
 	dir := m.makeDirPath(name)
 
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
@@ -49,8 +49,13 @@ func (m HandlerMaker) Make(name string) error {
 		return err
 	}
 
+	return m.writeContent(f, pkg, file)
+}
+
+func (m HandlerMaker) writeContent(f io.Writer, pkg, handler string) error {
+
 	content := strings.Replace(handlerStub, "<package>", pkg, -1)
-	content = strings.Replace(content, "<handler>", file, -1)
+	content = strings.Replace(content, "<handler>", handler, -1)
 
 	if _, err := f.Write([]byte(content)); err != nil {
 		return err
