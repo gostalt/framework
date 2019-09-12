@@ -40,6 +40,52 @@ func TestCreateDefinitionAllowsStringer(t *testing.T) {
 	}
 }
 
+func TestRedirect(t *testing.T) {
+	redirect := Redirect("example", "test")
+
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest(http.MethodGet, "/example", nil)
+
+	redirect.Handler.ServeHTTP(w, r)
+
+	if w.Code != http.StatusPermanentRedirect {
+		t.Error("Expected redirect to return 308")
+	}
+}
+
+func TestInvalidRouteHandlerPanics(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Expected a panic")
+		}
+	}()
+
+	_ = createDefinition("/", 42)
+}
+
+func TestHTTPRouteMethodsReturnDefinition(t *testing.T) {
+	methods := []func(string, interface{}) Definition{
+		Get,
+		Post,
+		Put,
+		Patch,
+		Delete,
+		Options,
+	}
+
+	s := new(TestStringer)
+
+	for _, m := range methods {
+		defer func() {
+			if r := recover(); r != nil {
+				t.Error("Creating definition panicked")
+			}
+		}()
+
+		m("/", s)
+	}
+}
+
 type TestStringer int
 
 func (TestStringer) String() string {
