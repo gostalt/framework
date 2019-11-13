@@ -3,13 +3,14 @@ package schedule
 // Job represents a piece of work that should be carried out when a
 // certain criteria, determined by the `ShouldFire` method, is met.
 type Job interface {
-	Handle() error
+	// Should fire is a check that determines if a Job should run.
 	ShouldFire() bool
+	// Handle is called if a Job’s ShouldFire check is `true`.
+	Handle() error
 }
 
-// Runner runs the Jobs contained in it. This can be triggered
-// manually, but in production you should set a cron job up to
-// call this functionality automatically.
+// Runner contains a number of Jobs. Running the `Run` method on
+// a Runner checks if each job can be ran and runs it.
 type Runner struct {
 	jobs []Job
 }
