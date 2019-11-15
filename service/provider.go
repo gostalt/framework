@@ -1,6 +1,6 @@
 package service
 
-import "github.com/sarulabs/di"
+import "github.com/sarulabs/di/v2"
 
 // Provider is a piece of the app that provides a service for the
 // developer, such as a database or logger. Providers can Register
