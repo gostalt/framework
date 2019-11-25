@@ -18,8 +18,8 @@ type Runner struct {
 }
 
 // NewRunner creates a new runner from a list of Jobs.
-func NewRunner(jobs ...Job) Runner {
-	return Runner{
+func NewRunner(jobs ...Job) *Runner {
+	return &Runner{
 		jobs: jobs,
 	}
 }
@@ -27,7 +27,7 @@ func NewRunner(jobs ...Job) Runner {
 // Run iterates through the Jobs container in the Runner and
 // determines if they should be ran. If so, it calls the Handle
 // method on the Job.
-func (r Runner) Run() {
+func (r *Runner) Run() {
 	wg := sync.WaitGroup{}
 	for _, job := range r.jobs {
 		if job.ShouldFire() {
@@ -45,6 +45,6 @@ func (r Runner) Run() {
 }
 
 // Add adds another Job to the Runner.
-func (r Runner) Add(jobs ...Job) {
+func (r *Runner) Add(jobs ...Job) {
 	r.jobs = append(r.jobs, jobs...)
 }
