@@ -91,3 +91,17 @@ type TestStringer int
 func (TestStringer) String() string {
 	return "Just Testing"
 }
+
+func MiddlewareTester(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("A TEST "))
+		next.ServeHTTP(w, r)
+	})
+}
+
+func MiddlewareTesterTwo(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("THIS IS "))
+		next.ServeHTTP(w, r)
+	})
+}

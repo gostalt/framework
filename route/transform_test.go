@@ -1,6 +1,8 @@
 package route
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -40,6 +42,25 @@ func TestTransformGorillaUsesGroupPrefix(t *testing.T) {
 
 		return nil
 	})
+}
+
+func TestMiddlewareChainIsAppliedToIndividualRoute(t *testing.T) {
+	r := mux.NewRouter()
+	h := new(TestStringer)
+	g := Collection(
+		Get("/test", h).Middleware(MiddlewareTester, MiddlewareTesterTwo),
+	)
+
+	result := TransformGorilla(r, g)
+
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/test", nil)
+
+	result.ServeHTTP(w, req)
+
+	if w.Body.String() != "THIS IS A TEST Just Testing" {
+		t.Error("Expect middleware to be added to the route")
+	}
 }
 
 func TestTidyPath(t *testing.T) {
