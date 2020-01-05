@@ -7,9 +7,10 @@ import (
 
 // Definition defines a new route for the application.
 type Definition struct {
-	Methods []string
-	Handler http.Handler
-	URI     string
+	Methods    []string
+	Handler    http.Handler
+	URI        string
+	middleware []Middleware
 }
 
 // Redirect takes a `from` URI and a `to` URI and creates a new
@@ -52,6 +53,11 @@ func Delete(uri string, handler interface{}) Definition {
 // Options creates a OPTIONS route using the given URI.
 func Options(uri string, handler interface{}) Definition {
 	return createDefinition(uri, handler, http.MethodOptions)
+}
+
+func (d Definition) Middleware(middleware ...Middleware) Definition {
+	d.middleware = middleware
+	return d
 }
 
 func createDefinition(uri string, handler interface{}, methods ...string) Definition {
