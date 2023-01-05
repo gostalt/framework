@@ -1,6 +1,6 @@
 module github.com/gostalt/framework
 
-go 1.12
+go 1.19
 
 require (
 	github.com/gorilla/mux v1.7.3
